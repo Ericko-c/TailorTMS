@@ -5,7 +5,7 @@ const { check, validationResult } = require('express-validator');
 
 // Routes for managing payments
 router.post('/', [
-    check('customerId').notEmpty().withMessage('Customer ID is required'),
+    check('orderId').notEmpty().withMessage('Order ID is required'),
     check('amount').isNumeric().withMessage('Amount must be a number'),
     check('method').isIn(['Cash', 'Card', 'Online']).withMessage('Invalid payment method'),
     check('status').isIn(['Paid', 'Unpaid']).withMessage('Invalid payment status')

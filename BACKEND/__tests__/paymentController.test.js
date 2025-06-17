@@ -1,17 +1,29 @@
 const request = require('supertest');
 const app = require('../app');
 const mongoose = require('mongoose');
+const Order = require('../models/Order');
 
 let connection;
+let testOrderId;
 
 beforeAll(async () => {
     connection = await mongoose.connect('mongodb://localhost:27017/tailorTMS_test', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
+    // Create a test order to use its _id for payments
+    const order = new Order({
+        customerId: 'test-customer',
+        status: 'New',
+        priority: 'Normal',
+        assignedTailor: 'Test Tailor',
+    });
+    await order.save();
+    testOrderId = order._id;
 });
 
 afterAll(async () => {
+    await mongoose.connection.db.dropDatabase();
     await connection.disconnect();
 });
 
@@ -20,7 +32,7 @@ describe('Payment API', () => {
         const response = await request(app)
             .post('/api/payments')
             .send({
-                customerId: '12345',
+                orderId: testOrderId,
                 amount: 100,
                 method: 'Cash',
                 status: 'Paid',
@@ -39,7 +51,7 @@ describe('Payment API', () => {
         const payment = await request(app)
             .post('/api/payments')
             .send({
-                customerId: '12345',
+                orderId: testOrderId,
                 amount: 100,
                 method: 'Cash',
                 status: 'Paid',
@@ -54,7 +66,7 @@ describe('Payment API', () => {
         const payment = await request(app)
             .post('/api/payments')
             .send({
-                customerId: '12345',
+                orderId: testOrderId,
                 amount: 100,
                 method: 'Cash',
                 status: 'Paid',
@@ -75,7 +87,7 @@ describe('Payment API', () => {
         const payment = await request(app)
             .post('/api/payments')
             .send({
-                customerId: '12345',
+                orderId: testOrderId,
                 amount: 100,
                 method: 'Cash',
                 status: 'Paid',

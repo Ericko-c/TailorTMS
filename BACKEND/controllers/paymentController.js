@@ -2,8 +2,9 @@ const Payment = require('../models/Payment');
 
 // Create a new payment
 exports.createPayment = async (req, res) => {
-    try {
-        const payment = new Payment(req.body);
+    try {        // Only allow fields defined in the schema
+        const { orderId, amount, method, status } = req.body;
+        const payment = new Payment({ orderId, amount, method, status });
         await payment.save();
         res.status(201).json(payment);
     } catch (error) {
