@@ -1,14 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import TaskForm from '../components/TaskForm';
+import { API_BASE_URL } from '../config';
+
+interface Task {
+  _id?: string;
+  orderId: string;
+  tailorName: string;
+  taskDescription: string;
+  status: string;
+}
 
 const TaskManagement = () => {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  const addTask = (task) => {
-    setTasks([...tasks, task]);
-    setShowForm(false);
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/tasks`)
+      .then(res => res.json())
+      .then(data => setTasks(data))
+      .catch(() => setTasks([]));
+  }, []);
+
+  const addTask = async (task: Task) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(task),
+      });
+      const data = await response.json();
+      setTasks([...tasks, data]);
+      setShowForm(false);
+    } catch {
+      // handle error
+    }
   };
 
   return (

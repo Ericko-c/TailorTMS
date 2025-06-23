@@ -1,11 +1,17 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import LoginForm from '../components/LoginForm';
+import { API_BASE_URL } from '../config';
+
+interface LoginCredentials {
+  username: string;
+  password: string;
+}
 
 const LoginPage = () => {
-  const handleLogin = async (credentials) => {
+  const handleLogin = async (credentials: LoginCredentials) => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

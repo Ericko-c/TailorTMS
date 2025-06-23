@@ -1,19 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import OrderForm from '../components/OrderForm';
 import Notification from '../components/Notification';
+import { API_BASE_URL } from '../config';
+
+interface Order {
+  _id?: string;
+  customerId: string;
+  status: string;
+  priority: string;
+  assignedTailor: string;
+}
 
 const OrderManagement = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [notification, setNotification] = useState('');
 
-  const addOrder = (order) => {
-    setOrders([...orders, order]);
-    setShowForm(false);
+  // Fetch orders from backend on mount
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/orders`)
+      .then(res => res.json())
+      .then(data => setOrders(data))
+      .catch(() => setOrders([]));
+  }, []);
+
+  const addOrder = async (order: Order) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order),
+      });
+      const data = await response.json();
+      setOrders([...orders, data]);
+      setShowForm(false);
+    } catch {
+      // handle error
+    }
   };
 
-  const markOrderAsDone = (orderId) => {
+  const markOrderAsDone = (orderId: string) => {
     // Simulate marking an order as done and sending a notification
     setNotification(`Order ${orderId} marked as Done!`);
   };
