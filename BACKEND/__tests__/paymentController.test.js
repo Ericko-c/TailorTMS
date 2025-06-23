@@ -23,8 +23,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    await mongoose.connection.db.dropDatabase();
-    await connection.disconnect();
+    await mongoose.connection.close(); // Ensures all connections are closed
 });
 
 describe('Payment API', () => {

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import CustomerForm from '../components/CustomerForm';
 import MeasurementForm from '../components/MeasurementForm';
+import { API_BASE_URL } from '../config';
 
 interface Customer {
   name: string;
@@ -28,9 +29,27 @@ const CustomerManagement = () => {
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  const addCustomer = (customer: Customer) => {
-    setCustomers([...customers, customer]);
-    setShowForm(false);
+  // Fetch customers from backend on mount
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/customers`)
+      .then(res => res.json())
+      .then(data => setCustomers(data))
+      .catch(() => setCustomers([]));
+  }, []);
+
+  const addCustomer = async (customer: Customer) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/customers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customer),
+      });
+      const data = await response.json();
+      setCustomers([...customers, data]);
+      setShowForm(false);
+    } catch {
+      // handle error
+    }
   };
 
   const addMeasurement = (measurement: Measurement) => {

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { API_BASE_URL } from '../config';
 
 const AnalyticsDashboard = () => {
   const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/analytics')
+    fetch(`${API_BASE_URL}/analytics`)
       .then((res) => res.json())
       .then((data) => setAnalytics(data))
       .catch((err) => console.error('Error fetching analytics:', err));

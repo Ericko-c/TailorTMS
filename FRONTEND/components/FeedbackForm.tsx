@@ -1,16 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { API_BASE_URL } from '../config';
 
-const FeedbackForm = ({ onSubmit }) => {
+interface FeedbackFormProps {
+  onSubmit: (feedback: any) => void;
+}
+
+const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit }) => {
   const [rating, setRating] = useState('');
   const [comment, setComment] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    const feedbackData = {
-      rating: parseInt(rating, 10),
-      comment,
-    };
-    onSubmit(feedbackData);
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const feedbackData = {
+        rating: parseInt(rating, 10),
+        comment,
+      };
+      // Send feedback to backend
+      const response = await fetch(`${API_BASE_URL}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(feedbackData),
+      });
+      const data = await response.json();
+      onSubmit(data);
+    } catch (error) {
+      Alert.alert('Failed to submit feedback');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,7 +54,7 @@ const FeedbackForm = ({ onSubmit }) => {
         placeholder="Enter comment"
       />
 
-      <Button title="Submit" onPress={handleSubmit} />
+      <Button title="Submit" onPress={handleSubmit} disabled={loading} />
     </View>
   );
 };
