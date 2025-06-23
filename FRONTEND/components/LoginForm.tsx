@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-const LoginForm = ({ onLogin }) => {
+type LoginFormProps = {
+  onLogin: (username: string, password: string) => void;
+};
+
+const LoginForm = ({ onLogin }: LoginFormProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    onLogin({ username, password });
+    onLogin(username, password);
   };
 
   return (
