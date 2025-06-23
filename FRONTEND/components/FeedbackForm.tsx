@@ -1,42 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { API_BASE_URL } from '../config';
 
-interface FeedbackFormProps {
-  onSubmit: (feedback: any) => void;
+interface Feedback {
+  _id?: string;
+  orderId: string;
+  tailorName: string;
+  rating: number;
+  comment: string;
 }
 
-const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit }) => {
-  const [rating, setRating] = useState('');
-  const [comment, setComment] = useState('');
+interface FeedbackFormProps {
+  onSubmit: (feedback: Feedback) => void;
+  initialData?: Feedback | null;
+}
+
+const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit, initialData }) => {
+  const [orderId, setOrderId] = useState(initialData?.orderId || '');
+  const [tailorName, setTailorName] = useState(initialData?.tailorName || '');
+  const [rating, setRating] = useState(initialData?.rating?.toString() || '');
+  const [comment, setComment] = useState(initialData?.comment || '');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const feedbackData = {
-        rating: parseInt(rating, 10),
-        comment,
-      };
-      // Send feedback to backend
-      const response = await fetch(`${API_BASE_URL}/feedback`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(feedbackData),
-      });
-      const data = await response.json();
-      onSubmit(data);
-    } catch (error) {
-      Alert.alert('Failed to submit feedback');
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (initialData) {
+      setOrderId(initialData.orderId || '');
+      setTailorName(initialData.tailorName || '');
+      setRating(initialData.rating?.toString() || '');
+      setComment(initialData.comment || '');
     }
+  }, [initialData]);
+
+  const handleSubmit = () => {
+    const feedbackData: Feedback = {
+      orderId,
+      tailorName,
+      rating: parseInt(rating, 10),
+      comment,
+      _id: initialData?._id,
+    };
+    onSubmit(feedbackData);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Submit Feedback</Text>
-
+      <Text style={styles.title}>{initialData ? 'Edit Feedback' : 'Submit Feedback'}</Text>
+      <Text style={styles.label}>Order ID</Text>
+      <TextInput
+        style={styles.input}
+        value={orderId}
+        onChangeText={setOrderId}
+        placeholder="Enter Order ID"
+      />
+      <Text style={styles.label}>Tailor Name</Text>
+      <TextInput
+        style={styles.input}
+        value={tailorName}
+        onChangeText={setTailorName}
+        placeholder="Enter Tailor Name"
+      />
       <Text style={styles.label}>Rating (1-5)</Text>
       <TextInput
         style={styles.input}
@@ -45,7 +67,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit }) => {
         placeholder="Enter rating"
         keyboardType="numeric"
       />
-
       <Text style={styles.label}>Comment</Text>
       <TextInput
         style={styles.input}
@@ -53,8 +74,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ onSubmit }) => {
         onChangeText={setComment}
         placeholder="Enter comment"
       />
-
-      <Button title="Submit" onPress={handleSubmit} disabled={loading} />
+      <Button title={initialData ? 'Update' : 'Submit'} onPress={handleSubmit} disabled={loading} />
     </View>
   );
 };

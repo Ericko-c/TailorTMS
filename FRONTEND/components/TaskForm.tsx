@@ -1,25 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Picker } from 'react-native';
 
-const TaskForm = ({ onSubmit }) => {
-  const [orderId, setOrderId] = useState('');
-  const [tailorName, setTailorName] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
-  const [status, setStatus] = useState('Pending');
+interface Task {
+  _id?: string;
+  orderId: string;
+  tailorName: string;
+  taskDescription: string;
+  status: string;
+}
+
+interface TaskFormProps {
+  onSubmit: (task: Task) => void;
+  initialData?: Task | null;
+}
+
+const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
+  const [orderId, setOrderId] = useState(initialData?.orderId || '');
+  const [tailorName, setTailorName] = useState(initialData?.tailorName || '');
+  const [taskDescription, setTaskDescription] = useState(initialData?.taskDescription || '');
+  const [status, setStatus] = useState(initialData?.status || 'Pending');
+
+  useEffect(() => {
+    if (initialData) {
+      setOrderId(initialData.orderId || '');
+      setTailorName(initialData.tailorName || '');
+      setTaskDescription(initialData.taskDescription || '');
+      setStatus(initialData.status || 'Pending');
+    }
+  }, [initialData]);
 
   const handleSubmit = () => {
-    const taskData = {
+    const taskData: Task = {
       orderId,
       tailorName,
       taskDescription,
       status,
+      _id: initialData?._id,
     };
     onSubmit(taskData);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Assign Task</Text>
+      <Text style={styles.title}>{initialData ? 'Edit Task' : 'Assign Task'}</Text>
 
       <Text style={styles.label}>Order ID</Text>
       <TextInput
@@ -48,7 +71,7 @@ const TaskForm = ({ onSubmit }) => {
       <Text style={styles.label}>Status</Text>
       <Picker
         selectedValue={status}
-        onValueChange={(itemValue) => setStatus(itemValue)}
+        onValueChange={(itemValue: string) => setStatus(itemValue)}
         style={styles.input}
       >
         <Picker.Item label="Pending" value="Pending" />
@@ -56,7 +79,7 @@ const TaskForm = ({ onSubmit }) => {
         <Picker.Item label="Completed" value="Completed" />
       </Picker>
 
-      <Button title="Submit" onPress={handleSubmit} />
+      <Button title={initialData ? 'Update' : 'Submit'} onPress={handleSubmit} />
     </View>
   );
 };

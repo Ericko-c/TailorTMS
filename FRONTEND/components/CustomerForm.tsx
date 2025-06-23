@@ -1,19 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-const CustomerForm = ({ onSubmit }) => {
-  const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
+interface Customer {
+  name: string;
+  contact: string;
+  measurements: {
+    chest: number;
+    waist: number;
+    hips: number;
+    sleeve: number;
+    inseam: number;
+  };
+  _id?: string;
+}
+
+interface CustomerFormProps {
+  onSubmit: (customer: Customer) => void;
+  initialData?: Customer | null;
+}
+
+const CustomerForm: React.FC<CustomerFormProps> = ({ onSubmit, initialData }) => {
+  const [name, setName] = useState(initialData?.name || '');
+  const [contact, setContact] = useState(initialData?.contact || '');
   const [measurements, setMeasurements] = useState({
-    chest: '',
-    waist: '',
-    hips: '',
-    sleeve: '',
-    inseam: '',
+    chest: initialData?.measurements?.chest?.toString() || '',
+    waist: initialData?.measurements?.waist?.toString() || '',
+    hips: initialData?.measurements?.hips?.toString() || '',
+    sleeve: initialData?.measurements?.sleeve?.toString() || '',
+    inseam: initialData?.measurements?.inseam?.toString() || '',
   });
 
+  useEffect(() => {
+    if (initialData) {
+      setName(initialData.name || '');
+      setContact(initialData.contact || '');
+      setMeasurements({
+        chest: initialData.measurements?.chest?.toString() || '',
+        waist: initialData.measurements?.waist?.toString() || '',
+        hips: initialData.measurements?.hips?.toString() || '',
+        sleeve: initialData.measurements?.sleeve?.toString() || '',
+        inseam: initialData.measurements?.inseam?.toString() || '',
+      });
+    }
+  }, [initialData]);
+
   const handleSubmit = () => {
-    const customerData = {
+    const customerData: Customer = {
       name,
       contact,
       measurements: {
@@ -23,6 +55,7 @@ const CustomerForm = ({ onSubmit }) => {
         sleeve: parseFloat(measurements.sleeve),
         inseam: parseFloat(measurements.inseam),
       },
+      _id: initialData?._id,
     };
     onSubmit(customerData);
   };
@@ -51,14 +84,13 @@ const CustomerForm = ({ onSubmit }) => {
           <Text style={styles.label}>{key.charAt(0).toUpperCase() + key.slice(1)}</Text>
           <TextInput
             style={styles.input}
-            value={measurements[key]}
+            value={measurements[key as keyof typeof measurements]}
             onChangeText={(value) => setMeasurements({ ...measurements, [key]: value })}
             placeholder={`Enter ${key}`}
             keyboardType="numeric"
           />
         </View>
       ))}
-
       <Button title="Submit" onPress={handleSubmit} />
     </View>
   );

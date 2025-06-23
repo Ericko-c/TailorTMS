@@ -1,12 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Picker } from 'react-native';
 import { notify } from '../App';
 
-const OrderForm = ({ onSubmit }) => {
-  const [customerId, setCustomerId] = useState('');
-  const [status, setStatus] = useState('New');
-  const [priority, setPriority] = useState('Normal');
-  const [assignedTailor, setAssignedTailor] = useState('');
+interface Order {
+  _id?: string;
+  customerId: string;
+  status: string;
+  priority: string;
+  assignedTailor: string;
+}
+
+interface OrderFormProps {
+  onSubmit: (order: Order) => void;
+  initialData?: Order | null;
+}
+
+const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, initialData }) => {
+  const [customerId, setCustomerId] = useState(initialData?.customerId || '');
+  const [status, setStatus] = useState(initialData?.status || 'New');
+  const [priority, setPriority] = useState(initialData?.priority || 'Normal');
+  const [assignedTailor, setAssignedTailor] = useState(initialData?.assignedTailor || '');
+
+  useEffect(() => {
+    if (initialData) {
+      setCustomerId(initialData.customerId || '');
+      setStatus(initialData.status || 'New');
+      setPriority(initialData.priority || 'Normal');
+      setAssignedTailor(initialData.assignedTailor || '');
+    }
+  }, [initialData]);
 
   const handleSubmit = () => {
     // Enhanced validation logic
@@ -25,11 +47,12 @@ const OrderForm = ({ onSubmit }) => {
       return;
     }
 
-    const orderData = {
+    const orderData: Order = {
       customerId,
       status,
       priority,
       assignedTailor,
+      _id: initialData?._id,
     };
 
     onSubmit(orderData);
@@ -38,7 +61,7 @@ const OrderForm = ({ onSubmit }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create Order</Text>
+      <Text style={styles.title}>{initialData ? 'Edit Order' : 'Create Order'}</Text>
 
       <Text style={styles.label}>Customer ID</Text>
       <TextInput
@@ -51,7 +74,7 @@ const OrderForm = ({ onSubmit }) => {
       <Text style={styles.label}>Status</Text>
       <Picker
         selectedValue={status}
-        onValueChange={(itemValue) => setStatus(itemValue)}
+        onValueChange={(itemValue: string) => setStatus(itemValue)}
         style={styles.input}
       >
         <Picker.Item label="New" value="New" />
@@ -64,7 +87,7 @@ const OrderForm = ({ onSubmit }) => {
       <Text style={styles.label}>Priority</Text>
       <Picker
         selectedValue={priority}
-        onValueChange={(itemValue) => setPriority(itemValue)}
+        onValueChange={(itemValue: string) => setPriority(itemValue)}
         style={styles.input}
       >
         <Picker.Item label="Normal" value="Normal" />
