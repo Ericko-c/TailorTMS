@@ -1,7 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const Notification = ({ message }) => {
+type NotificationProps = {
+  message: string;
+};
+
+const Notification = ({ message }: NotificationProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>{message}</Text>

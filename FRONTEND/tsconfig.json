@@ -3,6 +3,9 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react-native",
-    "lib": ["esnext", "dom"]
+    "lib": ["esnext", "dom"],
+    "allowJs": true,
+    "moduleResolution": "node",
+    "types": ["react-native", "react-native-toast-message"]
   }
 }

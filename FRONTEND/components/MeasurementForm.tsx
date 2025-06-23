@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-const MeasurementForm = ({ onSubmit }) => {
-  const [measurements, setMeasurements] = useState({
+interface Measurement {
+  chest: number;
+  waist: number;
+  hips: number;
+  sleeve: number;
+  inseam: number;
+}
+
+type MeasurementFormProps = {
+  onSubmit: (measurements: Measurement) => void;
+};
+
+const MeasurementForm = ({ onSubmit }: MeasurementFormProps) => {
+  const [measurements, setMeasurements] = useState<{ [key: string]: string; chest: string; waist: string; hips: string; sleeve: string; inseam: string }>({
     chest: '',
     waist: '',
     hips: '',
@@ -11,7 +23,7 @@ const MeasurementForm = ({ onSubmit }) => {
   });
 
   const handleSubmit = () => {
-    const measurementData = {
+    const measurementData: Measurement = {
       chest: parseFloat(measurements.chest),
       waist: parseFloat(measurements.waist),
       hips: parseFloat(measurements.hips),
@@ -30,13 +42,12 @@ const MeasurementForm = ({ onSubmit }) => {
           <TextInput
             style={styles.input}
             value={measurements[key]}
-            onChangeText={(value) => setMeasurements({ ...measurements, [key]: value })}
-            placeholder={`Enter ${key}`}
+            onChangeText={(text) => setMeasurements({ ...measurements, [key]: text })}
             keyboardType="numeric"
           />
         </View>
       ))}
-      <Button title="Submit" onPress={handleSubmit} />
+      <Button title="Add Measurement" onPress={handleSubmit} />
     </View>
   );
 };

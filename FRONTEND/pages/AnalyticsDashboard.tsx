@@ -2,8 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { API_BASE_URL } from '../config';
 
+interface AnalyticsData {
+  totalOrders: number;
+  activeOrders: number;
+  completedOrders: number;
+  tailorPerformance: any[];
+  weeklyTrends: any[];
+  averageReturnRate: number;
+}
+
 const AnalyticsDashboard = () => {
-  const [analytics, setAnalytics] = useState(null);
+  const [analytics, setAnalytics] = useState<AnalyticsData>({
+    totalOrders: 0,
+    activeOrders: 0,
+    completedOrders: 0,
+    tailorPerformance: [],
+    weeklyTrends: [],
+    averageReturnRate: 0,
+  });
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/analytics`)
@@ -55,15 +71,7 @@ const AnalyticsDashboard = () => {
       />
 
       <Text style={styles.sectionTitle}>Customer Return Rate</Text>
-      <FlatList
-        data={analytics.customerReturnRate}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text>Return Rate: {item.returnRate}</Text>
-          </View>
-        )}
-      />
+      <Text style={styles.label}>Average Return Rate: {analytics.averageReturnRate.toFixed(2)}</Text>
     </View>
   );
 };
