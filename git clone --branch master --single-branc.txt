@@ -1,0 +1,1 @@
+git clone --branch master --single-branch https://github.com/Ericko-c/TailorTMS.git

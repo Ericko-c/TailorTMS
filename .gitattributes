@@ -1,1 +1,5 @@
 * text=auto
+
+MONGODB_URI=mongodb+srv://erickodhiambo4590:5BINeT4NAeJALntJ@cluster0.tsxvoe5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=your_jwt_secret
+PORT=5000

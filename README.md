@@ -82,7 +82,7 @@ graph TD;
 4. **Set up environment variables:**
    - Create a `.env` file in `BACKEND` with:
      ```env
-     MONGODB_URI=your_mongodb_connection_string
+     MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/tailorTMS?retryWrites=true&w=majority
      JWT_SECRET=your_jwt_secret
      PORT=5000
      ```
