@@ -1,34 +1,43 @@
-const mongoose = require('mongoose');
-
+const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
-  customerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer',
+  clientName: {
+    type: String,
     required: true,
+  },
+  clientPhoneNo: {
+    type: String,
+    required: true,
+    match: /^[0-9]{10}$/,
+  },
+  measurements: {
+    type: String,
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+    min: 0,
   },
   status: {
     type: String,
-    enum: ['New', 'Cutting', 'Sewing', 'Final Touches', 'Done'],
-    default: 'New',
+    enum: ["placed", "inprogress", "done", "picked"],
+    default: "placed",
   },
-  priority: {
+  urgency: {
     type: String,
-    enum: ['Normal', 'Urgent'],
-    default: 'Normal',
+    enum: ["high", "medium", "low"],
+    default: "high",
   },
-  assignedTailor: {
-    type: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
-  timestamps: {
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-}, { timestamps: true });
+});
 
-module.exports = mongoose.model('Order', orderSchema);
+orderSchema.pre("save", function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+const orderModel = mongoose.model("Order", orderSchema);
+module.exports = orderModel;
