@@ -6,8 +6,8 @@ const placeOrder = async (req, res) => {
       req.body;
 
     clientName = clientName.trim().toLowerCase();
-    status = status.trim().toLowerCase();
-    urgency = status.trim().toLowerCase();
+    status = (status || "placed").trim().toLowerCase();
+    urgency = (urgency || "high").trim().toLowerCase();
 
     const newOrder = new Order({
       clientName,
