@@ -34,7 +34,7 @@ const placeOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().sort({ createdAt: -1 });
 
     return res.status(200).json({
       message: "Orders fetched successfully!",

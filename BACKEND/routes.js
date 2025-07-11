@@ -1,6 +1,6 @@
 const express = require("express");
 const { userSignup } = require("./controllers/userSignup");
-const { userSignin } = require("./controllers/userSignin");
+const { userSignin, userSignout } = require("./controllers/userSignin");
 const { requestOTP } = require("./controllers/requestOTP");
 const { resetPassword } = require("./controllers/resetPassword");
 const { placeOrder, getOrdersByStatus, updateOrder, getAllOrders, getTotalAmount, getOrdersByMonth } = require("./controllers/ordersController");
@@ -10,6 +10,7 @@ const router = express.Router();
 // Auth routes
 router.post("/users/signup/", userSignup);
 router.post("/users/signin/", userSignin);
+router.post("/users/signout/",userSignout);
 router.post("/users/requestOTP/",requestOTP);
 router.post("/users/resetPassword/",resetPassword);
 
