@@ -32,7 +32,7 @@ export default function OrdersScreen() {
     measurements:" ",
     amount:0,
     urgency:"high",
-    status:""
+    status:"placed"
   });
   
   const handleInputChange = (name, value) => {
@@ -114,7 +114,6 @@ export default function OrdersScreen() {
   };
 
   // fetch all orders
-  useEffect(() => {
     const getAllOrders = async () => {
       try {
         setLoading(true);
@@ -131,9 +130,10 @@ export default function OrdersScreen() {
         setLoading(false);
       }
     };
-    getAllOrders();
-  }, []);
 
+    useEffect(()=>{
+      getAllOrders();
+    },[])
 
   // add new order
       const handleAddOrder = async () => {
@@ -145,8 +145,9 @@ export default function OrdersScreen() {
         if (result.success) {
           setModal2Open(!modal2Open);
           ToastComponent("success","Order added successfully!");
-          setFormData({})
+          setFormData({});
         }
+      await getAllOrders();
       } catch (error) {
         console.log("An error occurred", error.message);
         ToastComponent("error", error.message);
@@ -305,7 +306,7 @@ export default function OrdersScreen() {
                                 placeholder="Enter amount charged"
                                 style={styles.textInput}
                                 value={formData.amount}
-                                onChangeText={(text) => handleInputChange("amount", text)}
+                                onChangeText={(text) => handleInputChange("amount", parseFloat(text))}
                                 keyboardType="numeric"
                               />
                             </View>
