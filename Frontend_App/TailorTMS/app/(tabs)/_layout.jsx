@@ -62,36 +62,25 @@ return (
             ),
             headerLeft: () => (
               <TouchableOpacity
-              onPress={()=>router.push('/UserNotifications')}
+              onPress={()=>router.push('/Profile')}
               style={{marginLeft:20}}
-              >
-              <View>
-              <FontAwesome6 name="bell" size={20} color="#EBF6FE" />
-              {hasUnreadNotifications && (
-              <View
-              style={{
-              position: 'absolute',
-              top: -2,
-              right: -2,
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: 'red',
-            }}
-            />
-          )}
-          </View>
-          </TouchableOpacity>
-            ),
-            headerRight: () => (
-              <TouchableOpacity
-              style={{marginRight:20}}
-              onPress={()=>router.push("/Profile")}
               >
                 <FontAwesome6 
                   name="user-circle" 
                   size={20} 
                   color="#EBF6FE" 
+                />
+          </TouchableOpacity>
+            ),
+            headerRight: () => (
+              <TouchableOpacity
+              style={{marginRight:20}}
+              onPress={()=>router.push("/")}
+              >
+                <FontAwesome6 
+                  name="right-from-bracket"
+                  size={20} 
+                  color="red" 
                 />
               </TouchableOpacity>
             )

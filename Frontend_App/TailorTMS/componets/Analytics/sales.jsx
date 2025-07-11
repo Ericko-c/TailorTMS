@@ -8,18 +8,13 @@ import useAuthStore from '../../zustand/store.jsx';
 
 const screenWidth = Dimensions.get("window").width;
 
-export const StationSalesBarGraph = () => {
+export const SalesBarGraph = () => {
   const station = useAuthStore((state) => state.station);
   const [monthlyTotals, setMonthlyTotals] = useState(Array(12).fill(0));
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMonthlyOrders = async () => {
-      if (!station?.id) {
-        console.log("station.id not yet available");
-        return;
-      }
-
       setLoading(true);
       const currentYear = new Date().getFullYear();
       const totals = [];
@@ -27,9 +22,8 @@ export const StationSalesBarGraph = () => {
       for (let month = 1; month <= 12; month++) {
         try {
           const res = await axios.get(
-            `${SERVER_URI}/api/v1/order/getOrdersByMonth/${station.id}/${month}/${currentYear}`
+            `${SERVER_URI}/api/v1/orders/${month}/${currentYear}`
           );
-
           totals.push(res.data.totalOrders || 0);
         } catch (err) {
           console.error(`Error fetching month ${month}:`, err.message);

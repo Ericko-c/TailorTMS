@@ -21,44 +21,15 @@ import { useRouter } from "expo-router";
 export default function Profile() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const [userData, setUserData] = useState(null);
   const [Loading, setLoading] = useState(false);
-  const [location, setLocation] = useState(null);
-  const [locationName, setLocationName] = useState(null);
-
-  // get user info
-
-  useEffect(() => {
-    const getUserInfo = async () => {
-      try {
-        console.log("initiating info fetch");
-        setLoading(true);
-        const response = await axios.get(
-          `${SERVER_URI}/api/v1/user/info/${user.id}`
-        );
-        const result = response.data;
-        console.log(result);
-        if (result.success) {
-          setUserData(result);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log("API fetch error:", error.response?.data || error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUserInfo();
-  }, []);
 
   // handleSignout
   const handleSignout = async (req, res) => {
     try {
-      const response = await axios.post(`${SERVER_URI}/api/v1/signout/`);
+      const response = await axios.post(`${SERVER_URI}/api/v1/users/signout/`);
       console.log(response);
       if (response.data.success) {
-        router.push("/Confirm");
+        router.push("/");
       }
     } catch (error) {
       ToastComponent("error", error.message);
@@ -77,7 +48,7 @@ export default function Profile() {
               <View style={styles.header}>
                 <Image source={userImg} style={styles.profileImg} />
                 <View>
-                  <Text style={styles.label}>{userData?.user?.email || "tailor@gmail.com"}</Text>
+                  <Text style={styles.label}>{user?.email || "tailor@gmail.com"}</Text>
                 </View>
               </View>
 
@@ -86,18 +57,18 @@ export default function Profile() {
                 <View style={styles.dataContainer}>
                   <Text style={styles.label}>Username</Text>
                   <Text style={styles.subTitle}>
-                    {userData?.user?.username || "Tailor username"}
+                    {user?.username || "Tailor username"}
                   </Text>
                 </View>
 
                 <View style={styles.dataContainer}>
                   <Text style={styles.label}>Phone Number</Text>
-                  <Text style={styles.subTitle}>{userData?.user?.phoneNo || "+254756789065"}</Text>
+                  <Text style={styles.subTitle}>{user?.phoneNo || "+254756789065"}</Text>
                 </View>
 
                 <View style={styles.dataContainer}>
                   <Text style={styles.label}>Email Address</Text>
-                  <Text style={styles.subTitle}>{userData?.user?.email || "tailor@gmail.com"}</Text>
+                  <Text style={styles.subTitle}>{user?.email || "tailor@gmail.com"}</Text>
                 </View>
               </View>
 

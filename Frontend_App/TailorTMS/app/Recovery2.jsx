@@ -43,34 +43,32 @@ export default function Recovery() {
   };
 
   const handleSubmit = async () => {
-    // if (formData.newPassword !== formData.confirmPassword) {
-    //   return ToastComponent("error", "Passwords do not match!");
-    // }
+    if (formData.newPassword !== formData.confirmPassword) {
+      return ToastComponent("error", "Passwords do not match!");
+    }
 
-    // try {
-    //   const response = await axios.post(
-    //     `${SERVER_URI}/api/v1/resetPassword`,
-    //     formData
-    //   );
-    //   console.log(response);
-    //   if (response.data.success) {
-    //     ToastComponent("success", "Password reset successfully!");
-    //     router.push("/Signin");
-    //   }
-    // } catch (error) {
-    //   if (
-    //     error.response &&
-    //     error.response.data &&
-    //     error.response.data.message
-    //   ) {
-    //     ToastComponent("error", error.response.data.message);
-    //   } else {
-    //     ToastComponent("error", "Something went wrong. Try again!");
-    //   }
-    //   console.log(error.response.data.message);
-    // }
-
-    router.push("/Signin");
+    try {
+      const response = await axios.post(
+        `${SERVER_URI}/api/v1/users/resetPassword/`,
+        formData
+      );
+      console.log(response);
+      if (response.data.success) {
+        ToastComponent("success", "Password reset successfully!");
+        router.push("/Signin");
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        ToastComponent("error", error.response.data.message);
+      } else {
+        ToastComponent("error", "Something went wrong. Try again!");
+      }
+      console.log(error.response.data.message);
+    }
   };
   return (
     <KeyboardAvoidingView

@@ -21,11 +21,9 @@ import ToastComponent from "../componets/Toast";
 import useAuthStore from "../zustand/store";
 import { useNavigation } from "expo-router";
 export default function Signin() {
-  const navigation = useNavigation();
   const { login } = useAuthStore();
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -43,32 +41,31 @@ export default function Signin() {
   };
 
   const handleSignin = async () => {
-    // try {
-    //   const response = await axios.post(
-    //     `${SERVER_URI}/api/v1/user/signin`,
-    //     formData
-    //   );
-    //   const result = response.data;
-    //   console.log(result.user);
-    //   if (result.success) {
-    //     await login(
-    //       result.user.username,
-    //       result.token,
-    //       result.user.id,
-    //       result.user.phoneNo,
-    //       result.user.email
-    //     );
-    //     ToastComponent("success", `Welcome back! ${formData.username}`);
-    //     router.push("/Home");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   if (error.response && error.response.data) {
-    //     ToastComponent("error", `${error.response.data.message}`);
-    //   }
-    // }
+    try {
+      const response = await axios.post(
+        `${SERVER_URI}/api/v1/users/signin/`,
+        formData
+      );
+      const result = response.data;
+      console.log(result.user);
+      if (result.success) {
+        await login(
+          result.user.username,
+          result.token,
+          result.user.id,
+          result.user.phoneNo,
+          result.user.email
+        );
+        ToastComponent("success", `Welcome back! ${formData.username}`);
+        router.push('(tabs)/Dashboard');
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response && error.response.data) {
+        ToastComponent("error", `${error.response.data.message}`);
+      }
+    }
 
-    router.push('(tabs)/Dashboard');
   };
   const handleRecovery = () => {
     router.push("/Recovery");

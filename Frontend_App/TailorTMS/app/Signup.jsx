@@ -22,7 +22,6 @@ import useAuthStore from "../zustand/store.jsx";
 
 export default function Signup() {
   const { signup } = useAuthStore();
-  const { user } = useAuthStore();
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -50,7 +49,7 @@ export default function Signup() {
         return ToastComponent("error", "Passwords don't match");
       }
       const response = await axios.post(
-        `${SERVER_URI}/api/v1/user/signup`,
+        `${SERVER_URI}/api/v1/users/signup/`,
         formData
       );
       const result = response.data;

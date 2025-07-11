@@ -22,7 +22,6 @@ import useAuthStore from "../zustand/store.jsx";
 
 export default function Recovery() {
   const { user } = useAuthStore();
-  console.log(user);
   const router = useRouter();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,34 +39,32 @@ export default function Recovery() {
     });
   };
   const handleSubmit = async () => {
-    // try {
-    //   const emailToUse = formData.email || user?.email;
-    //   if (!emailToUse) {
-    //     return ToastComponent("error", "Email is required");
-    //   }
-    //   const response = await axios.post(
-    //     `${SERVER_URI}/api/v1/requestOTP`,
-    //     formData
-    //   );
-    //   if (response.data.success) {
-    //     ToastComponent("success", "OTP sent successfully!");
-    //     router.push("/Recovery2");
-    //   } else {
-    //     ToastComponent(
-    //       "error",
-    //       response.data.message || "An error occurred. Please try again."
-    //     );
-    //   }
-    // } catch (error) {
-    //   ToastComponent(
-    //     "error",
-    //     error.respose?.data?.message ||
-    //       "Something went wrong. Please try again."
-    //   );
-    //   return res.status(500).json({ message: error.message });
-    // }
-    
-    router.push("/Recovery2");
+    try {
+      const emailToUse = formData.email || user?.email;
+      if (!emailToUse) {
+        return ToastComponent("error", "Email is required");
+      }
+      const response = await axios.post(
+        `${SERVER_URI}/api/v1/users/requestOTP/`,
+        formData
+      );
+      if (response.data.success) {
+        ToastComponent("success", "OTP sent successfully!");
+        router.push("/Recovery2");
+      } else {
+        ToastComponent(
+          "error",
+          response.data.message || "An error occurred. Please try again."
+        );
+      }
+    } catch (error) {
+      ToastComponent(
+        "error",
+        error.respose?.data?.message ||
+          "Something went wrong. Please try again."
+      );
+      return res.status(500).json({ message: error.message });
+    }
 
   };
   return (

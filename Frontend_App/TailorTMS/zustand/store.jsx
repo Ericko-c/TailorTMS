@@ -8,7 +8,6 @@ const useAuthStore = create(
       user: null,
       isUserAuthenticated: false,
       isStationAuthenticated: false,
-      station: null,
       hasUnreadNotifications: false,
       setHasUnreadNotifications: (value) =>
         set({ hasUnreadNotifications: value }),
@@ -29,11 +28,6 @@ const useAuthStore = create(
           isUserAuthenticated: false,
           hasUnreadNotifications: false,
         });
-      },
-
-      // station
-      stationLogin: async (stationData) => {
-        set({ station: { ...stationData }, isStationAuthenticated: true });
       },
     }),
     {
